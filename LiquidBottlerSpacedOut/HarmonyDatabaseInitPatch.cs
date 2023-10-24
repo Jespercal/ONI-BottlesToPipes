@@ -13,8 +13,9 @@ namespace Alesseon.LiquidBottler.HarmonyDatabasePatch
         [HarmonyPatch(typeof(GeneratedBuildings), "LoadGeneratedBuildings")]
         private static void Prefix()
         {
-            ModUtil.AddBuildingToPlanScreen("Plumbing", Building.Config.LiquidBottlerConfig.ID);
+            //ModUtil.AddBuildingToPlanScreen("Plumbing", Building.Config.LiquidBottlerConfig.ID);
             ModUtil.AddBuildingToPlanScreen("Plumbing", Building.Config.LiquidBottleEmptierConfig.ID);
+            ModUtil.AddBuildingToPlanScreen("HVAC", Building.Config.GasCanisterEmptierConfig.ID);
         }
     }
 
@@ -23,6 +24,7 @@ namespace Alesseon.LiquidBottler.HarmonyDatabasePatch
     public class LiquidBottlerDbPatch
     {
         private const string TechID = "ImprovedLiquidPiping";
+        private const string TechID2 = "PortableGasses";
         private static void Postfix()
         {
 
@@ -35,17 +37,32 @@ namespace Alesseon.LiquidBottler.HarmonyDatabasePatch
                 if (list == null)
                     return;
 
-                list.Add(Building.Config.LiquidBottlerConfig.ID);
                 list.Add(Building.Config.LiquidBottleEmptierConfig.ID);
             }
             else
             {
-
-
                 System.Reflection.FieldInfo info = typeof(Database.Techs).GetField("TECH_GROUPING");
                 Dictionary<string, string[]> dict = (Dictionary<string, string[]>)info.GetValue(null);
-                dict[TechID].Append(Building.Config.LiquidBottlerConfig.ID);
                 dict[TechID].Append(Building.Config.LiquidBottleEmptierConfig.ID);
+                typeof(Database.Techs).GetField("TECH_GROUPING").SetValue(null, dict);
+            }
+
+            if (typeof(Database.Techs).GetField("TECH_GROUPING") == null)
+            {
+                Tech tech = Db.Get().Techs.TryGet(TechID2);
+                if (tech == null)
+                    return;
+                ICollection<string> list = (ICollection<string>)tech.GetType().GetField("unlockedItemIDs")?.GetValue(tech);
+                if (list == null)
+                    return;
+
+                list.Add(Building.Config.LiquidBottleEmptierConfig.ID);
+            }
+            else
+            {
+                System.Reflection.FieldInfo info = typeof(Database.Techs).GetField("TECH_GROUPING");
+                Dictionary<string, string[]> dict = (Dictionary<string, string[]>)info.GetValue(null);
+                dict[TechID2].Append(Building.Config.LiquidBottleEmptierConfig.ID);
                 typeof(Database.Techs).GetField("TECH_GROUPING").SetValue(null, dict);
             }
         }

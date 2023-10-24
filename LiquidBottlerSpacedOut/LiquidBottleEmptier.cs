@@ -184,7 +184,7 @@ namespace Alesseon.LiquidBottler.Building
                     .EventTransition(
                         GameHashes.OnStorageChange,
                         emptying, 
-                        (smi => !smi.GetComponent<Storage>().IsEmpty())
+                        (smi => !smi.GetComponent<Storage>().IsEmpty() && smi.GetComponent<Storage>().MassStored() > 0)
                     ).Enter(
                         "CreateChore",
                         (smi => smi.CreateChore())
@@ -201,7 +201,7 @@ namespace Alesseon.LiquidBottler.Building
                     ).EventTransition(
                         GameHashes.OnStorageChange,
                         waitingfordelivery,
-                        (smi => smi.GetComponent<Storage>().IsEmpty())
+                        (smi => smi.GetComponent<Storage>().IsEmpty() || smi.GetComponent<Storage>().MassStored() <= 0)
                     ).Enter(
                         "StartMeter",
                         (smi => smi.StartMeter())

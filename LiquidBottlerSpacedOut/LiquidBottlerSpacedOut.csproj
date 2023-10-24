@@ -27,39 +27,41 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <None Include="mod_info.yaml" />
+    <None Include="Build\mod_info.yaml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="translations\zh.po" />
+    <None Include="Build\translations\zh.po" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\DLC\0Harmony.dll</HintPath>
+      <HintPath>D:\Programs\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\DLC\Assembly-CSharp.dll</HintPath>
+      <HintPath>D:\Programs\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\DLC\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>D:\Programs\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\DLC\UnityEngine.dll</HintPath>
+      <HintPath>D:\Programs\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\DLC\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>D:\Programs\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HarmonyDatabaseInitPatch.cs" />
+    <Compile Include="GasCanisterEmptier.cs" />
     <Compile Include="LiquidBottleEmptier.cs" />
+    <Compile Include="GasCanisterEmptierConfig.cs" />
     <Compile Include="LiquidBottleEmptierConfig.cs" />
     <Compile Include="LiquidBottler.cs" />
     <Compile Include="LiquidBottlerConfig.cs" />
@@ -78,14 +80,9 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(ProjectDir)mods\$(TargetName)" (mkdir $(ProjectDir)\mods\$(TargetName))
-if not exist "$(ProjectDir)mods\$(TargetName)\translations" (mkdir $(ProjectDir)\mods\$(TargetName)\translations)
-copy /Y "$(TargetPath)" "$(ProjectDir)mods\$(TargetName)\$(TargetName).dll"
-if exist "$(ProjectDir)anims" (xcopy /Y /R /I /E /Q  "$(ProjectDir)anims" "$(ProjectDir)mods\$(TargetName)\anims")
-if exist "$(ProjectDir)Config.json" (copy /Y "$(ProjectDir)Config.json" "$(ProjectDir)mods\$(TargetName)\Config.json")
-if exist "$(ProjectDir)mod_info.yaml" (copy /Y "$(ProjectDir)mod_info.yaml" "$(ProjectDir)mods\$(TargetName)\mod_info.yaml")
-if exist "$(ProjectDir)\translations\zh.po" (copy /Y "$(ProjectDir)\translations\zh.po" "$(ProjectDir)mods\$(TargetName)\translations\zh.po")
-echo F | xcopy /Y /R /I /E /Q "$(ProjectDir)mods\$(TargetName)" "C:%25HOMEPATH%25\Documents\Klei\OxygenNotIncluded\mods\dev\$(TargetName)"
-rmdir /s /q "$(ProjectDir)mods"</PostBuildEvent>
+    <PostBuildEvent>del "$(realuserdocuments)\Klei\OxygenNotIncluded\mods\dev\$(ProjectName)" /Q
+mkdir "$(realuserdocuments)\Klei\OxygenNotIncluded\mods\dev\$(ProjectName)"
+xcopy "$(TargetPath)" "$(realuserdocuments)\Klei\OxygenNotIncluded\mods\dev\$(ProjectName)" /Y
+xcopy "$(SolutionDir)$(ProjectName)\build\*.*" "$(realuserdocuments)\Klei\OxygenNotIncluded\mods\dev\$(ProjectName)" /S /C /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
